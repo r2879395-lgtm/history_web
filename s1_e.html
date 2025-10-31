@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 1 Expanded View</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg">
+        <!-- The Go Back Button Implementation -->
+        <!-- Key Change: The href attribute is set to "index.html" -->
+        <a href="index.html" 
+           class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 transition duration-150">
+            <!-- Icon for going back (using an inline SVG) -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            Go Back to Index
+        </a>
+
+        <div class="mt-6">
+            <h1 class="text-3xl font-bold text-gray-900">Step 1: Detailed View</h1>
+            <p class="mt-2 text-gray-600">This page contains the expanded content for the first step of your process. All other steps are hidden here.</p>
+        </div>
+
+        <div class="mt-6 space-y-4">
+            <h2 class="text-xl font-semibold text-gray-800">Content Details</h2>
+            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <p class="text-gray-700">Detailed information regarding the setup and configuration process for Step 1 goes here. This area is dedicated to specific instructions and resources.</p>
+            </div>
+            
+            <!-- Example of another interactive element -->
+            <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md">
+                Complete Step 1
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
