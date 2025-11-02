@@ -20,19 +20,6 @@
         .nhd-gold { background-color: #ffc72c; }
         .hover\:bg-nhd-blue\/90:hover { background-color: rgba(0, 76, 153, 0.9); }
 
-        /* Style for loading spinner */
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #004c99;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
         /* Custom alert boxes for internal failures */
         .failure-box {
             border-left: 5px solid #dc2626; /* Red for failure */
@@ -65,7 +52,7 @@
             
             <!-- Section 1: Positional Warfare Strategy -->
             <div class="space-y-4">
-                <h2 class="text-xl font-bold text-gray-800 border-l-4 border-nhd-blue pl-3">Chiang’s Focus on Positional Warfare</h2>
+                <h2 class="text-xl font-bold text-gray-800 border-l-4 border-nhd-blue pl-3">Chiang’s Focus on Positional Warfare </h2>
                 
                 <!-- Detailed Content Area -->
                 <div class="p-6 nhd-light-blue rounded-xl border border-nhd-blue/50">
@@ -102,39 +89,6 @@
                 </div>
             </div>
 
-            <!-- Interactive Element: API-powered Historical Search (RETAINED) -->
-            <div class="pt-4 border-t border-gray-200">
-                <label for="prompt-input" class="block text-lg font-bold text-gray-800 mb-2">Dive Deeper: Research a Historical Term</label>
-                <p class="text-sm text-gray-600 mb-3">Ask about specific events or figures (e.g., "What was the Marshall Mission?" or "Describe the Soviet role in Manchuria").</p>
-                <textarea id="prompt-input" placeholder="Enter your historical question here..."
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-nhd-blue focus:border-nhd-blue transition duration-150 h-24 resize-none"></textarea>
-            </div>
-
-            <div id="results-output" class="hidden mt-4 p-4 rounded-xl border-2 border-nhd-gold/50 bg-nhd-gold/10">
-                <h3 class="text-md font-extrabold text-nhd-blue mb-2 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 mr-2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21 12 13.5H3.75z" />
-                    </svg>
-                    AI Research Result
-                </h3>
-                <!-- Results will be displayed here -->
-            </div>
-            
-            <div id="loading-indicator" class="hidden flex justify-center items-center py-4">
-                <div class="spinner"></div>
-                <span class="ml-3 text-nhd-blue font-medium">Generating Answer...</span>
-            </div>
-
-            <!-- Search Button (RETAINED) -->
-            <button id="search-button"
-                class="w-full nhd-blue hover:bg-nhd-blue/90 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2"
-                onclick="fetchHistoricalData()">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
-                <span>Run Historical Search</span>
-            </button>
-            
             <!-- Confirm Read Button (Updated for Part 2) -->
             <button class="mt-4 w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-4 rounded-xl transition duration-200 shadow-md transform hover:-translate-y-0.5"
                 onclick="showCustomMessage('You have confirmed reading KMT Initial Dominance (1945–1946). You can now move on to the next part of your project!', 'Part 2 Confirmed')">
@@ -156,10 +110,6 @@
     </div>
 
     <script>
-        // NOTE: The __app_id, __firebase_config, and __initial_auth_token are provided automatically by the environment.
-        const apiKey = "AIzaSyBcXBwA8dpsfOvqeZ1gLUGVHA-FPoZm1WI"; // Canvas will provide this key in runtime
-        const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=" + apiKey;
-
         // Custom message box function to comply with the no-alert rule
         function showCustomMessage(message, title = 'Notice') {
             const msgBox = document.getElementById('message-box');
@@ -167,97 +117,6 @@
             document.getElementById('message-content').innerHTML = message;
             msgBox.classList.remove('hidden');
             msgBox.classList.add('flex');
-        }
-
-        async function fetchHistoricalData(retryCount = 0) {
-            const prompt = document.getElementById('prompt-input').value.trim();
-            const resultsOutput = document.getElementById('results-output');
-            const loadingIndicator = document.getElementById('loading-indicator');
-            const searchButton = document.getElementById('search-button');
-            const maxRetries = 3;
-
-            if (!prompt) {
-                showCustomMessage('Please enter a term or question to search.', 'Input Required');
-                return;
-            }
-
-            // UI updates for loading state
-            resultsOutput.classList.add('hidden');
-            loadingIndicator.classList.remove('hidden');
-            searchButton.disabled = true;
-            searchButton.innerHTML = '<div class="spinner !border-l-white"></div><span class="ml-3">Searching...</span>';
-
-            const systemPrompt = "You are a specialized history tutor focused on the Chinese Civil War (1945-1949). Provide a concise, clear, and highly focused response to the user's query, ensuring your answer is directly relevant to the historical context of the conflict and uses the provided search results for grounding. The response must be a single, short paragraph.";
-
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                tools: [{ "google_search": {} }],
-                systemInstruction: { parts: [{ text: systemPrompt }] },
-            };
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.status === 429 && retryCount < maxRetries) {
-                    // Exponential backoff
-                    const delay = Math.pow(2, retryCount) * 1000;
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    return fetchHistoricalData(retryCount + 1);
-                }
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                const candidate = result.candidates?.[0];
-                let outputText = "<p class='text-gray-700'>No information found. Please try a different query.</p>";
-                let sourcesHtml = "";
-
-                if (candidate && candidate.content?.parts?.[0]?.text) {
-                    const text = candidate.content.parts[0].text;
-                    
-                    // Extract and format grounding sources
-                    const groundingMetadata = candidate.groundingMetadata;
-                    if (groundingMetadata && groundingMetadata.groundingAttributions) {
-                        const sources = groundingMetadata.groundingAttributions
-                            .map(attribution => ({
-                                uri: attribution.web?.uri,
-                                title: attribution.web?.title,
-                            }))
-                            .filter(source => source.uri && source.title);
-                        
-                        if (sources.length > 0) {
-                            sourcesHtml = '<p class="text-xs font-semibold text-gray-600 mt-3 mb-1">Sources:</p><ul class="list-disc pl-5 text-xs text-gray-600 space-y-1">';
-                            sources.forEach((source, index) => {
-                                sourcesHtml += `<li><a href="${source.uri}" target="_blank" class="hover:underline text-nhd-blue">${source.title}</a></li>`;
-                            });
-                            sourcesHtml += '</ul>';
-                        }
-                    }
-
-                    outputText = `<p class="text-gray-800 font-medium">${text}</p>${sourcesHtml}`;
-                }
-
-                resultsOutput.innerHTML = outputText;
-                resultsOutput.classList.remove('hidden');
-
-            } catch (error) {
-                console.error("Gemini API Error:", error);
-                showCustomMessage(`An error occurred while fetching data: <code>${error.message}</code>`, 'API Error');
-            } finally {
-                // UI updates for completion
-                loadingIndicator.classList.add('hidden');
-                searchButton.disabled = false;
-                searchButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-                                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                                           </svg>
-                                           <span>Run Historical Search</span>`;
-            }
         }
     </script>
 
