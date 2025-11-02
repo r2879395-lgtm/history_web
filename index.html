@@ -3,87 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Part 1 Detailed</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Chinese Revolution in 1949</title>
+    <!-- Load Tailwind CSS CDN --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter Font --><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        /* Custom styles to ensure smooth scrolling and font application */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Lighter background for contrast */
+            scroll-behavior: smooth;
+        }
+        /* Style for the step cards */
+        .step-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        /* Custom blue color inspired by NHD branding */
+        .nhd-blue {
+            background-color: #004c99; /* Darker Blue */
+        }
+        .text-nhd-blue {
+            color: #004c99;
+        }
+        .border-nhd-blue {
+            border-color: #004c99;
+        }
+        .nhd-gold {
+            background-color: #ffc72c; /* Gold/Yellow accent */
+        }
+
+        /* Fade-in Animation Styles */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            /* Optional: Delay for staggering effect if multiple elements appear */
+            /* transition-delay: 0.1s; */
+        }
+
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
-<!-- Use flex to center the content vertically and horizontally -->
-<body class="min-h-screen flex items-center justify-center p-4 sm:p-6">
+<body class="bg-gray-50 text-gray-800">
 
-    <!-- Card Container: Max width adjusted for slightly larger screens while maintaining mobile friendliness -->
-    <div class="bg-white p-6 sm:p-10 rounded-2xl shadow-xl ring-1 ring-gray-100 w-full max-w-xl transition-all duration-300">
-        
-        <!-- Go Back Button -->
-        <a href="index.html" 
-            class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 transition duration-150 group">
-            <!-- Icon for going back (inline SVG) -->
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 mr-2 group-hover:-translate-x-0.5 transition-transform duration-150">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
-            Go Back to Index
-        </a>
-
-        <div class="mt-6 border-b pb-4 border-gray-200">
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">part 1 of revolution</h1>
-            <p class="mt-2 text-gray-500 text-base">This page contains the expanded content for the first part of the revolution.</p>
-        </div>
-
-        <div class="mt-8 space-y-6">
-            <h2 class="text-xl font-bold text-gray-800 border-l-4 border-indigo-500 pl-3">start</h2>
-            
-            <!-- Detailed Content Area -->
-            <div class="p-6 bg-indigo-50 rounded-xl border border-indigo-200">
-                <h3 class="text-lg font-semibold text-indigo-800 mb-2">lebronnn</h3>
-                <p class="text-gray-700 leading-relaxed">detailed info on the first main part of the chinese revolution</p>
+    <!-- Sticky Navigation Bar --><header class="sticky top-0 z-50 bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo/Site Title --><a href="#" class="flex-shrink-0 text-xl font-extrabold text-nhd-blue rounded-lg p-1 hover:bg-gray-50 transition">
+                    Chinese Revolution in 1949
+                </a>
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex space-x-8">
+                    <!-- Updated IDs to match the section below -->
+                    <a href="#kuomintang" class="text-gray-600 hover:text-nhd-blue font-medium transition duration-150 ease-in-out">Kuomintang (KMT) Guide</a>
+                    <a href="#parties" class="text-gray-600 hover:text-nhd-blue font-medium transition duration-150 ease-in-out">Chinese Communist Party (CCP)</a>
+                    <a href="#" class="nhd-blue text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-800 transition duration-150 ease-in-out">More info</a>
+                </nav>
                 
-                <ul class="list-disc pl-5 mt-4 text-gray-600 space-y-2">
-                    <li>bullet point 1</li>
-                    <li>bullet point 2</li>
-                </ul>
+                <!-- Mobile Menu Button (Hamburger) --><button id="menu-button" onclick="toggleMenu()" class="md:hidden text-gray-500 hover:text-gray-700 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-nhd-blue" aria-expanded="false" aria-controls="mobile-menu">
+                    <svg id="icon-open" class="h-6 w-6 block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                    <svg id="icon-close" class="h-6 w-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
-            
-            <!-- Interactive Element: API Key Input -->
-            <div>
-                <label for="api-key" class="block text-sm font-medium text-gray-700 mb-1">find smh</label>
-                <input type="password" id="api-key" placeholder=" "
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+        </div>
+        
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 shadow-lg">
+            <div class="px-4 pt-2 pb-3 space-y-1">
+                <!-- Links updated for consistency and context -->
+                <a href="#kuomintang" onclick="toggleMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-nhd-blue">KMT Guide</a>
+                <a href="#parties" onclick="toggleMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-nhd-blue">CCP Information</a>
+                <a href="#footer" onclick="toggleMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-nhd-blue">Connect</a>
+                <a href="#" class="block w-full text-center mt-2 nhd-blue text-white px-3 py-2 rounded-lg font-semibold hover:bg-blue-800 transition">More info</a>
             </div>
+        </div>
+    </header>
 
-            <!-- Action Button -->
-            <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                    onclick="showMessage('Part 1 marked as read!')">
-                confirm read of part 1
-            </button>
+    <main>
+        <!-- Hero Section - Enhanced for vertical centering and fluid height -->
+        <section class="nhd-blue py-16 sm:py-24 text-white shadow-xl flex items-center min-h-[50vh]">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-4">
+                    Chinese Revolution in 1949
+                </h1>
+                <p class="text-xl sm:text-2xl font-light opacity-90 mt-4">
+                    Exploring the conflict between the Kuomintang (KMT) and the Chinese Communist Party (CCP).
+                </p>
+                <!-- Placeholder image for visual context -->
+                <img src="https://placehold.co/1000x300/1e3a8a/ffffff?text=Image+Placeholder:+Revolutionary+Timeline" alt="Historical Timeline Placeholder" class="mt-8 w-full h-auto rounded-xl shadow-2xl opacity-90 mx-auto" onerror="this.onerror=null;this.src='https://placehold.co/1000x300/1e3a8a/ffffff?text=Timeline+Placeholder'">
+            </div>
+        </section>
+
+        <!-- Guide Steps Section - Renamed and given the appropriate ID for navigation -->
+        <section id="kuomintang" class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-section">
+            <h2 class="text-3xl sm:text-4xl font-bold text-center mb-16 text-nhd-blue">The 7 Parts in the Revolution</h2>
+
+            <!-- Grid of Steps - Responsive grid is good, adjusted card padding for mobile -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+
+                <!-- Step 1: Choose a Topic -->
+                <div class="step-card bg-white p-6 sm:p-8 rounded-xl shadow-lg border-t-4 border-nhd-blue flex flex-col fade-in-section">
+                    <div class="text-nhd-blue text-3xl sm:text-4xl font-extrabold mb-4">01</div>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-3">first spot</h3>
+                    <p class="text-gray-600 flex-grow text-sm sm:text-base">description of first step</p>
+                    <a href="s1_e.html" class="mt-4 text-nhd-blue font-semibold hover:underline text-sm sm:text-base">lebronnn →</a>
+                </div>
+
+                <!-- Step 2: Conduct Research -->
+                <div class="step-card bg-white p-6 sm:p-8 rounded-xl shadow-lg border-t-4 border-nhd-blue flex flex-col fade-in-section">
+                    <div class="text-nhd-blue text-3xl sm:text-4xl font-extrabold mb-4">02</div>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-3">second part</h3>
+                    <p class="text-gray-600 flex-grow text-sm sm:text-base">description of second step</p>
+                    <a href="#" class="mt-4 text-nhd-blue font-semibold hover:underline text-sm sm:text-base">jamesss →</a>
+                </div>
+
+                <!-- Step 3: Develop a Thesis -->
+                <div class="step-card bg-white p-6 sm:p-8 rounded-xl shadow-lg border-t-4 border-nhd-blue flex flex-col fade-in-section">
+                    <div class="text-nhd-blue text-3xl sm:text-4xl font-extrabold mb-4">03</div>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-3">work on it</h3>
+                    <p class="text-gray-600 flex-grow text-sm sm:text-base">lowk cooked</p>
+                    <a href="#" class="mt-4 text-nhd-blue font-semibold hover:underline text-sm sm:text-base">james harden →</a>
+                </div>
+
+                <!-- Step 4: Select a Category -->
+                <div class="step-card bg-white p-6 sm:p-8 rounded-xl shadow-lg border-t-4 border-nhd-blue flex flex-col fade-in-section">
+                    <div class="text-nhd-blue text-3xl sm:text-4xl font-extrabold mb-4">04</div>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-3">idk cuh</h3>
+                    <p class="text-gray-600 flex-grow text-sm sm:text-base">what should i write here?</p>
+                    <a href="#parties" class="mt-4 text-nhd-blue font-semibold hover:underline text-sm sm:text-base">View CCP Info →</a>
+                </div>
+
+                <!-- Step 5: Project Creation -->
+                <div class="step-card bg-white p-6 sm:p-8 rounded-xl shadow-lg border-t-4 border-nhd-blue flex flex-col fade-in-section">
+                    <div class="text-nhd-blue text-3xl sm:text-4xl font-extrabold mb-4">05</div>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-3">lowk cooked</h3>
+                    <p class="text-gray-600 flex-grow text-sm sm:text-base">help</p>
+                    <a href="#" class="mt-4 text-nhd-blue font-semibold hover:underline text-sm sm:text-base">help me →</a>
+                </div>
+
+                <!-- Step 6: Process Paper & Annotated Bibliography -->
+                <div class="step-card bg-white p-6 sm:p-8 rounded-xl shadow-lg border-t-4 border-nhd-blue flex flex-col fade-in-section">
+                    <div class="text-nhd-blue text-3xl sm:text-4xl font-extrabold mb-4">06</div>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-3">help me</h3>
+                    <p class="text-gray-600 flex-grow text-sm sm:text-base">6th step</p>
+                    <a href="#" class="mt-4 text-nhd-blue font-semibold hover:underline text-sm sm:text-base">need help hotlines →</a>
+                </div>
+
+            </div>
+            <!-- Standalone Step 7 -->
+            <div class="mt-16 text-center fade-in-section">
+                <div class="inline-block bg-white p-8 sm:p-10 rounded-xl shadow-2xl border-t-4 border-nhd-gold max-w-3xl w-full mx-auto">
+                    <div class="text-nhd-blue text-4xl sm:text-5xl font-extrabold mb-4">07</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 text-gray-900">Prepare for the thingy majingy</h3>
+                    <p class="text-base sm:text-lg text-gray-700">lock in</p>
+                    <a href="#" class="inline-block mt-6 nhd-gold text-gray-900 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-400 transition duration-150 ease-in-out text-sm sm:text-base">
+                        View Contest Deadlines
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources Callout Section - Renamed to 'Parties' -->
+        <section id="parties" class="py-16 sm:py-24 nhd-gold bg-opacity-90 fade-in-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Need Lebron?</h2>
+                <p class="text-lg sm:text-xl text-gray-800 mb-8 max-w-3xl mx-auto">
+                    help people with their work
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#" class="nhd-blue text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-800 transition duration-150 ease-in-out">
+                        Download Lebron highlights
+                    </a>
+                    <a href="#" class="bg-white text-nhd-blue font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-100 transition duration-150 ease-in-out border border-nhd-blue">
+                        find lebron games
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer - Added ID for navigation, ensured better mobile grid flow -->
+    <footer id="footer" class="bg-gray-800 text-white py-12 fade-in-section">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Grid collapses better on mobile, ensuring full width for link columns first -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <!-- Col 1: Logo & Info -->
+                <div class="col-span-2 md:col-span-1">
+                    <h4 class="text-xl font-bold mb-4">Ryan and Elliott</h4>
+                    <p class="text-sm text-gray-400">Promoting the study of lebron since 1967.</p>
+                </div>
+                <!-- Col 2: About -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">About</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-nhd-gold transition block">Our Mission</a></li>
+                        <li><a href="#" class="hover:text-nhd-gold transition block">Our Team</a></li>
+                        <li><a href="#" class="hover:text-nhd-gold transition block">NBA Rules</a></li>
+                    </ul>
+                </div>
+                <!-- Col 3: Support -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Support</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-nhd-gold transition block">FAQ</a></li>
+                        <li><a href="#" class="hover:text-nhd-gold transition block">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-nhd-gold transition block">Judge Portal</a></li>
+                    </ul>
+                </div>
+                <!-- Col 4: Social -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Connect</h4>
+                    <div class="flex space-x-4">
+                        <!-- SVG Icons replaced placeholders -->
+                        <a href="#" class="text-gray-400 hover:text-nhd-gold transition p-1 rounded-full hover:bg-gray-700" aria-label="Twitter">
+                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.46 6c-.77.34-1.6.57-2.48.67.88-.53 1.55-1.37 1.87-2.38-.82.49-1.74.85-2.73 1.04C18.32 4.49 17.2 4 15.93 4c-2.38 0-4.31 1.93-4.31 4.31 0 .34.04.67.11.99C8.01 9.09 4.75 7.3 2.5 4.5c-.37.64-.58 1.39-.58 2.18 0 1.49.76 2.81 1.91 3.58-.7-.02-1.36-.21-1.94-.53v.05c0 2.08 1.48 3.82 3.44 4.21-.36.1-.74.15-1.13.15-.28 0-.55-.03-.8-.08.54 1.7 2.12 2.93 3.99 2.97-1.48 1.16-3.34 1.85-5.36 1.85-.35 0-.7-.02-1.04-.06C3.21 20.8 5.48 21.5 7.82 21.5c9.38 0 14.5-7.77 14.5-14.5 0-.22-.01-.43-.02-.65.99-.72 1.85-1.63 2.53-2.67z"/></svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-nhd-gold transition p-1 rounded-full hover:bg-gray-700" aria-label="Facebook">
+                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15h-2.5v-3H10V9.74c0-2.23 1.36-3.46 3.33-3.46 1.02 0 1.89.08 2.14.12v2.41h-1.42c-1.12 0-1.34.53-1.34 1.32V12h2.78l-.45 3H12v6.8c4.56-.93 8-4.96 8-9.8z"/></svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-nhd-gold transition p-1 rounded-full hover:bg-gray-700" aria-label="Instagram">
+                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c2.75 0 3.08.01 4.17.06 1.09.05 1.79.22 2.45.47.66.25 1.23.6 1.77 1.14.54.54.89 1.11 1.14 1.77.25.66.42 1.36.47 2.45.05 1.09.06 1.42.06 4.17s-.01 3.08-.06 4.17c-.05 1.09-.22 1.79-.47 2.45-.25.66-.6 1.23-1.14 1.77-.54.54-1.11.89-1.77 1.14-.66.25-1.36.42-2.45.47-1.09.05-1.42.06-4.17.06s-3.08-.01-4.17-.06c-1.09-.05-1.79-.22-2.45-.47-.66-.25-1.23-.6-1.77-1.14-.54-.54-.89-1.11-1.77 1.14-.25.66-.42 1.36-.47 2.45-.05 1.09-.06 1.42-.06 4.17s.01 3.05.06 4.12c.05 1.07.21 1.58.36 1.95.15.37.35.65.61.91.26.26.54.46.91.61.37.15.88.31 1.95.36 1.07.05 1.41.06 4.12.06s3.05-.01 4.12-.06c1.07-.05 1.58-.21 1.95-.36.37-.15.65-.35.91-.61.26-.26.54-.46.61-.91.15-.37.31-.88.36-1.95.05-1.07.06-1.41.06-4.12s-.01-3.05-.06-4.12c-.05-1.07-.21-1.58-.36-1.95-.15-.37-.35-.65-.61-.91-.26-.26-.54-.46-.91-.61-.37-.15-.88-.31-1.95-.36-1.07-.05-1.41-.06-4.12-.06zm0 2c-2.71 0-3.05.01-4.12.06-1.07.05-1.58.21-1.95.36-.37.15-.65.35-.91.61-.26.26-.46.54-.61.91-.15.37-.31.88-.36 1.95-.05 1.07-.06 1.41-.06 4.12s.01 3.05.06 4.12c.05 1.07.21 1.58.36 1.95.15.37.35.65.61.91.26.26.54.46.91.61.37.15.88.31 1.95.36 1.07.05 1.41.06 4.12.06s3.05-.01 4.12-.06c1.07-.05 1.58-.21 1.95-.36.37-.15.65-.35.91-.61.26-.26.54-.46.61-.91.15-.37.31-.88.36-1.95.05-1.07.06-1.41.06-4.12s-.01-3.05-.06-4.12c-.05-1.07-.21-1.58-.36-1.95-.15-.37-.35-.65-.61-.91-.26-.26-.54-.46-.91-.61-.37-.15-.88-.31-1.95-.36-1.07-.05-1.41-.06-4.12-.06zm0 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm6.5-7.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-10 pt-6 border-t border-gray-700 text-center text-sm text-gray-500">
+                &copy; 6767 Lebron Glazers association.
+            </div>
         </div>
-    </div>
-    
-    <!-- Custom Modal/Message Box for no-alert rule -->
-    <div id="message-box" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden items-center justify-center p-4 z-50">
-        <div class="bg-white p-6 rounded-lg shadow-2xl max-w-sm w-full">
-            <h3 class="text-xl font-bold text-indigo-600 mb-3">Success</h3>
-            <p id="message-content" class="text-gray-700"></p>
-            <button class="mt-4 w-full bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600 transition" 
-                    onclick="document.getElementById('message-box').classList.add('hidden');">
-                Close
-            </button>
-        </div>
-    </div>
+    </footer>
 
     <script>
-        // Custom message box function to comply with the no-alert rule
-        function showMessage(message) {
-            const msgBox = document.getElementById('message-box');
-            document.getElementById('message-content').textContent = message;
-            msgBox.classList.remove('hidden');
-            msgBox.classList.add('flex');
+        // JavaScript for mobile menu toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const openIcon = document.getElementById('icon-open');
+            const closeIcon = document.getElementById('icon-close');
+
+            // Toggle Tailwind's 'hidden' class
+            menu.classList.toggle('hidden');
+
+            // Toggle the visibility of the hamburger and close icons
+            openIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
         }
+
+        // JavaScript for fade-in-on-scroll animation
+        document.addEventListener("DOMContentLoaded", function() {
+            const sections = document.querySelectorAll(".fade-in-section");
+
+            const observerOptions = {
+                root: null, // viewport
+                rootMargin: "0px",
+                threshold: 0.1 // 10% of the section must be visible to trigger
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                        // Optional: Stop observing once it's visible if you only want it to animate once
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Handle elements that might be visible on initial load
+            // This ensures elements already in view when page loads are visible immediately
+            const initialCheck = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: "0px",
+                threshold: 0 // Even a tiny bit visible
+            });
+            sections.forEach(section => {
+                initialCheck.observe(section);
+            });
+        });
     </script>
 
 </body>
