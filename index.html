@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Chinese Civil War</title>
+    <title>Chinese Revolution of 1949</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -19,29 +19,57 @@
         .nhd-gold { background-color: #ffc72c; }
         .text-nhd-gold { color: #ffc72c; }
 
-        /* Custom disabled state for the read gate */
-        .locked-card {
-            filter: grayscale(100%);
-            opacity: 0.6;
-            cursor: not-allowed;
-            pointer-events: none;
+        /* Timeline Container sets up the vertical line */
+        #timeline {
+            position: relative;
         }
-        .unlocked-card {
-            pointer-events: auto;
-            opacity: 1;
-            filter: grayscale(0%);
-        }
-
-        /* Timeline Connector */
-        .timeline-item:not(:last-child)::after {
+        
+        /* The main vertical line */
+        #timeline::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 20px; /* Aligns with the circle */
+            top: 0;
+            bottom: 0;
+            left: 16px; /* Position the line slightly left */
             width: 2px;
-            height: calc(100% - 20px);
             background-color: #d1d5db; /* Gray-300 */
-            transform: translateY(10px);
+        }
+
+        /* Timeline Item positioning and spacing */
+        .timeline-item {
+            position: relative;
+            /* Horizontal offset is tight to the line */
+            padding-left: 36px; 
+            /* UNIFORM FIX: Setting a consistent, large vertical spacing for ALL items */
+            margin-bottom: 2rem; 
+        }
+
+        /* Removed the specific override for #part2-card to make spacing uniform */
+
+        /* The Status Dot (Marker on the line) */
+        .timeline-item > .dot {
+            position: absolute;
+            top: 0;
+            left: 7px; /* Center the dot over the 2px line at left: 16px */
+            width: 18px; 
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10; /* Ensure dot is above the line */
+            font-size: 0.75rem; 
+            background-color: #004c99; 
+            color: white;
+            border: 3px solid #f3f4f6; 
+            box-shadow: 0 0 0 2px #004c99; 
+            /* Keep vertical position at 0 to align with the card's top edge */
+            transform: translateY(0); 
+        }
+
+        /* Content Card refinement */
+        .timeline-item .content-card {
+            margin-top: 0; 
         }
     </style>
 </head>
@@ -51,37 +79,37 @@
         
         <!-- Header and User ID Display -->
         <header class="pb-6 border-b border-gray-200 mb-8">
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">Project Timeline: The Chinese Civil War</h1>
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">Project Timeline: The Chinese Revoltion: 1945-1949</h1>
             <p class="mt-2 text-lg text-gray-600">Explore the decisive turning points that shaped modern China.</p>
             <div id="auth-status" class="mt-4 p-2 text-sm bg-gray-100 rounded-lg text-gray-700">
-                <span id="user-id-display">Loading User ID...</span>
+                
             </div>
         </header>
 
         <!-- Timeline Container -->
-        <div id="timeline" class="space-y-8 relative">
+        <div id="timeline" class="space-y-0 relative">
 
-            <!-- Part 1: Always Unlocked (Completed or First Step) -->
-            <div id="part1-card" class="timeline-item relative pl-12">
-                <!-- Status Circle -->
-                <div class="absolute top-0 left-0 w-10 h-10 rounded-full nhd-blue flex items-center justify-center shadow-lg">
-                    <span class="font-bold text-white">1</span>
+            <!-- Part 1: Initial Conflict -->
+            <div id="part1-card" class="timeline-item">
+                <!-- Status Dot -->
+                <div class="dot">
+                    <span class="font-bold">1</span>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-l-4 border-nhd-blue">
+                <div class="content-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-l-4 border-nhd-blue">
                     <span class="text-sm font-semibold text-nhd-blue uppercase">Phase 1: Initial Conflict</span>
                     <h2 class="text-2xl font-bold mt-1 text-gray-800">The Post-War Power Vacuum (1945)</h2>
                     <p class="mt-2 text-gray-600">The immediate aftermath of WWII and the collapse of the Japanese occupation sets the stage for civil war.</p>
-                    <a href="s1_e.html" id="part1-link" class="mt-4 inline-block nhd-blue text-white font-semibold py-2 px-4 rounded-lg text-sm transition hover:opacity-90">Read Details</a>
+                    <a href="s1_e.html" id="part1-link" class="mt-4 inline-block nhd-blue text-white font-semibold py-2 px-4 rounded-lg text-sm transition hover:opacity-90">Read Details </a>
                 </div>
             </div>
 
-            <!-- Part 2: Current Focus - Link to s2_e.html (Always Unlocked) -->
-            <div id="part2-card" class="timeline-item relative pl-12">
-                <!-- Status Circle -->
-                <div class="absolute top-0 left-0 w-10 h-10 rounded-full nhd-blue flex items-center justify-center shadow-lg">
-                    <span class="font-bold text-white">2</span>
+            <!-- Part 2: KMT Dominance & Collapse (Current Focus) -->
+            <div id="part2-card" class="timeline-item">
+                <!-- Status Dot -->
+                <div class="dot">
+                    <span class="font-bold">2</span>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-lg ring-4 ring-nhd-gold transition duration-300 border-l-4 border-nhd-blue">
+                <div class="content-card bg-white p-6 rounded-xl shadow-lg ring-4 ring-nhd-gold transition duration-300 border-l-4 border-nhd-blue">
                     <span class="text-sm font-semibold text-nhd-blue uppercase">Phase 2: KMT Dominance & Collapse</span>
                     <h2 class="text-2xl font-bold mt-1 text-gray-800">Chiang's Fatal Strategy (1945–1946)</h2>
                     <p class="mt-2 text-gray-600">Analyze the KMT's early strategic failures, corruption, and economic missteps that gifted the CCP control of the countryside.</p>
@@ -89,155 +117,70 @@
                 </div>
             </div>
 
-            <!-- Part 3: READ GATE APPLIED HERE - Initially Locked -->
-            <div id="part3-card" class="timeline-item relative pl-12 locked-card">
-                <!-- Status Circle -->
-                <div class="absolute top-0 left-0 w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center shadow-lg">
-                    <!-- Lock Icon SVG -->
-                    <svg id="part3-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white">
-                        <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v2.25H5.25a3 3 0 00-3 3v6a3 3 0 003 3h13.5a3 3 0 003-3v-6a3 3 0 00-3-3H16.5v-2.25A5.25 5.25 0 0012 1.5zm-1.5 6a.75.75 0 001.5 0V6a.75.75 0 00-1.5 0v1.5z" clip-rule="evenodd" />
-                    </svg>
-                    <span id="part3-number-icon" class="font-bold text-white hidden">3</span>
+            <!-- Part 3: Mao's Triumph -->
+            <div id="part3-card" class="timeline-item">
+                <!-- Status Dot -->
+                <div class="dot">
+                    <span class="font-bold">3</span>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-gray-400">
-                    <span id="part3-status-text" class="text-sm font-semibold text-gray-500 uppercase">Phase 3: The Decisive Battles (LOCKED)</span>
+                <div class="content-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-l-4 border-nhd-blue">
+                    <span id="part3-status-text" class="text-sm font-semibold text-nhd-blue uppercase">Phase 3: The Decisive Battles</span>
                     <h2 class="text-2xl font-bold mt-1 text-gray-800">Mao's Triumph: Mobile Warfare (1947–1949)</h2>
                     <p class="mt-2 text-gray-600">The final phase of the conflict, focusing on the strategic shift and the pivotal Huaihai Campaign.</p>
-                    <a href="#" id="part3-link" class="mt-4 inline-block bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg text-sm transition">
-                        Finish Part 2 to Unlock
+                    <a href="s3_e.html" id="part3-link" class="mt-4 inline-block nhd-blue text-white font-semibold py-2 px-4 rounded-lg text-sm transition hover:opacity-90">
+                        Read Details
                     </a>
                 </div>
             </div>
 
-        </div>
+            <!-- Part 4: Comparison Step -->
+            <div id="part4-card" class="timeline-item">
+                <!-- Status Dot -->
+                <div class="dot">
+                    <span class="font-bold">4</span>
+                </div>
+                <div class="content-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-l-4 border-nhd-blue">
+                    <span class="text-sm font-semibold text-nhd-blue uppercase">Phase 4: Comparative Analysis</span>
+                    <h2 class="text-2xl font-bold mt-1 text-gray-800">The Two Chinas: Long-Term Impact</h2>
+                    <p class="mt-2 text-gray-600">Compare the **Kuomintang's retreat to Taiwan** with the **CCP's establishment of the PRC** on the mainland. Analyze their contrasting political, social, and economic trajectories post-1949.</p>
+                    <a href="s4_e.html" id="part4-link" class="mt-4 inline-block nhd-blue text-white font-semibold py-2 px-4 rounded-lg text-sm transition hover:opacity-90">
+                        Start Comparison
+                    </a>
+                </div>
+            </div>
 
-    </div>
-
-    <!-- Firebase Script -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Set log level for debugging Firebase operations
-        setLogLevel('debug');
-
-        // Global variables provided by the environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let db = null;
-        let auth = null;
-        let userId = null;
-        let isAuthReady = false;
-
-        const part3Card = document.getElementById('part3-card');
-        const part3Link = document.getElementById('part3-link');
-        const part3StatusText = document.getElementById('part3-status-text');
-        const part3LockIcon = document.getElementById('part3-lock-icon');
-        const part3NumberIcon = document.getElementById('part3-number-icon');
-        const userIdDisplay = document.getElementById('user-id-display');
-
-        // 1. Initialization and Authentication
-        async function initializeFirebase() {
-            try {
-                if (Object.keys(firebaseConfig).length > 0) {
-                    const app = initializeApp(firebaseConfig);
-                    db = getFirestore(app);
-                    auth = getAuth(app);
-
-                    // Sign in using custom token or anonymously
-                    if (initialAuthToken) {
-                        await signInWithCustomToken(auth, initialAuthToken);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                    
-                    // Auth state is now confirmed
-                    userId = auth.currentUser.uid;
-                    isAuthReady = true;
-                    
-                    userIdDisplay.textContent = `Current User ID: ${userId}`;
-                    console.log("Firebase initialized and user authenticated.");
-
-                    // Start checking the progress once auth is ready
-                    checkProgress();
-                } else {
-                    userIdDisplay.textContent = "Error: Firebase config missing.";
-                    console.error("Firebase configuration is missing.");
-                }
-            } catch (e) {
-                userIdDisplay.textContent = "Error: Auth failed. Check console.";
-                console.error("Error during Firebase initialization or authentication:", e);
-            }
-        }
-
-        // 2. Progress Checking Function
-        async function checkProgress() {
-            if (!isAuthReady || !db || !userId) {
-                console.log("Waiting for auth to be ready or DB not initialized.");
-                return;
-            }
-
-            // Path to the completion document for Part 2
-            const part2CompletionPath = `/artifacts/${appId}/users/${userId}/progress/part2_completed`;
-            const docRef = doc(db, part2CompletionPath);
-
-            try {
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists() && docSnap.data().completed) {
-                    // UNLOCK Part 3
-                    console.log("Part 2 completed. Unlocking Part 3.");
-                    part3Card.classList.remove('locked-card');
-                    part3Card.classList.add('unlocked-card');
-                    
-                    // Update styling and text
-                    part3Link.href = "#"; // Replace with your Part 3 file name (e.g., s3_e.html)
-                    part3Link.textContent = "Read Details (Unlocked)";
-                    part3Link.classList.remove('bg-gray-400');
-                    part3Link.classList.add('nhd-blue', 'hover:opacity-90');
-
-                    part3StatusText.textContent = "Phase 3: The Decisive Battles (UNLOCKED)";
-                    part3StatusText.classList.remove('text-gray-500');
-                    part3StatusText.classList.add('text-nhd-blue');
-
-                    // Update circle icon
-                    part3Card.querySelector('.absolute.top-0.left-0').classList.remove('bg-gray-400');
-                    part3Card.querySelector('.absolute.top-0.left-0').classList.add('nhd-blue');
-                    
-                    part3LockIcon.classList.add('hidden');
-                    part3NumberIcon.classList.remove('hidden');
-
-                    part3Card.querySelector('.border-l-4').classList.remove('border-gray-400');
-                    part3Card.querySelector('.border-l-4').classList.add('border-nhd-blue');
-
-                } else {
-                    // Keep Part 3 locked (default state)
-                    console.log("Part 2 not yet completed. Part 3 remains locked.");
-                }
-            } catch (e) {
-                console.error("Error checking document status:", e);
-                // Keep locked on error for safety
-            }
-        }
-
-        // Start the process
-        initializeFirebase();
-
-        // Optional: onAuthStateChanged listener to handle real-time changes if needed
-        // onAuthStateChanged(auth, (user) => {
-        //     if (user) {
-        //         userId = user.uid;
-        //         isAuthReady = true;
-        //         userIdDisplay.textContent = `Current User ID: ${userId}`;
-        //         checkProgress();
-        //     } else {
-        //         // Handle signed out state if necessary
-        //     }
-        // });
-        
+            <!-- Part 5: Conclusion/Thesis Step -->
+            <div id="part5-card" class="timeline-item">
+                <!-- Status Dot -->
+                <div class="dot">
+                    <span class="font-bold">5</span>
+                </div>
+                <div class="content-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-l-4 border-nhd-blue">
+                    <span class="text-sm font-semibold text-nhd-blue uppercase">Phase 5: Final Argumentation</span>
+                    <h2 class="text-2xl font-bold mt-1 text-gray-800">Formulating the Final Thesis</h2>
+                    <p class="mt-2 text-gray-600">Synthesize research to craft a powerful, argumentative **thesis statement** that directly addresses the NHD theme of 'Turning Points'.</p>
+                    <a href="s5" id="part5-link" class="mt-4 inline-block nhd-blue text-white font-semibold py-2 px-4 rounded-lg text-sm transition hover:opacity-90">
+                        Write Thesis
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Part 6: Final Presentation/Polish -->
+            <div id="part6-card" class="timeline-item">
+                <!-- Status Dot -->
+                <div class="dot">
+                    <span class="font-bold">6</span>
+                </div>
+                <div class="content-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-l-4 border-nhd-blue">
+                    <span class="text-sm font-semibold text-nhd-blue uppercase">Phase 6: Final Presentation</span>
+                    <h2 class="text-2xl font-bold mt-1 text-gray-800">Annotated Bibliography & Presentation Polish</h2>
+                    <p class="mt-2 text-gray-600">Finalize your presentation medium (e.g., documentary, website) and compile the required **Annotated Bibliography** and Process Paper.</p>
+                    <a href="s6_e.html" id="part6-link" class="mt-4 inline-block nhd-blue text-white font-semibold py-2 px-4 rounded-lg text-sm transition hover:opacity-90">
+                        Review Checklist
+                    </a>
+                </div>
+            </div>
+        </div>        
     </script>
 
 </body>
