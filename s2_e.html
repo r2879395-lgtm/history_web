@@ -52,7 +52,7 @@
             
             <!-- Section 1: Positional Warfare Strategy -->
             <div class="space-y-4">
-                <h2 class="text-xl font-bold text-gray-800 border-l-4 border-nhd-blue pl-3">Chiang’s Focus on Positional Warfare </h2>
+                <h2 class="text-xl font-bold text-gray-800 border-l-4 border-nhd-blue pl-3">Chiang’s Focus on Positional Warfare </h2>
                 
                 <!-- Detailed Content Area -->
                 <div class="p-6 nhd-light-blue rounded-xl border border-nhd-blue/50">
@@ -88,12 +88,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Confirm Read Button (Updated for Part 2) -->
-            <button class="mt-4 w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-4 rounded-xl transition duration-200 shadow-md transform hover:-translate-y-0.5"
-                onclick="showCustomMessage('You have confirmed reading KMT Initial Dominance (1945–1946). You can now move on to the next part of your project!', 'Part 2 Confirmed')">
-                Confirm Read of Part 2
-            </button>
         </div>
     </div>
     
@@ -109,14 +103,111 @@
         </div>
     </div>
 
-    <script>
-        // Custom message box function to comply with the no-alert rule
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables provided by the environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db = null;
+        let auth = null;
+
+        // Initialize Firebase
+        try {
+            if (Object.keys(firebaseConfig).length > 0) {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+            } else {
+                console.error("Firebase configuration is missing.");
+            }
+        } catch (e) {
+            console.error("Error initializing Firebase:", e);
+        }
+
+        /**
+         * Custom message box function to comply with the no-alert rule.
+         */
         function showCustomMessage(message, title = 'Notice') {
             const msgBox = document.getElementById('message-box');
             document.querySelector('#message-box h3').textContent = title;
             document.getElementById('message-content').innerHTML = message;
             msgBox.classList.remove('hidden');
             msgBox.classList.add('flex');
+        }
+
+        /**
+         * Handles user authentication using the provided token or anonymously.
+         * @returns {string | null} The user ID if successful, otherwise null.
+         */
+        async function initializeAuth() {
+            if (!auth) return null;
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                return auth.currentUser.uid;
+            } catch (error) {
+                console.error("Firebase Auth Error:", error);
+                return null;
+            }
+        }
+
+        /**
+         * Saves the completion status of Part 2 to Firestore.
+         */
+        window.confirmCompletion = async function() {
+            const confirmButton = document.getElementById('confirm-button');
+            confirmButton.disabled = true;
+            confirmButton.textContent = 'Saving Progress...';
+
+            if (!db) {
+                showCustomMessage("Database not configured. Cannot save progress.", "Error");
+                confirmButton.disabled = false;
+                confirmButton.textContent = 'Confirm Read of Part 2';
+                return;
+            }
+
+            const userId = await initializeAuth();
+            if (!userId) {
+                showCustomMessage("Failed to authenticate user. Cannot save progress.", "Error");
+                confirmButton.disabled = false;
+                confirmButton.textContent = 'Confirm Read of Part 2';
+                return;
+            }
+
+            // Path to store the completion status for Part 2 in the user's private space
+            const docPath = `/artifacts/${appId}/users/${userId}/progress/part2_completed`;
+            const progressRef = doc(db, docPath);
+
+            try {
+                await setDoc(progressRef, {
+                    completed: true,
+                    timestamp: new Date(),
+                    part: 2
+                });
+                
+                showCustomMessage(
+                    'Your reading progress for **Part 2** has been saved. The next section on your Timeline is now unlocked!', 
+                    'Part 2 Confirmed & Unlocked'
+                );
+                
+                // Update button appearance to show success
+                confirmButton.textContent = 'Part 2 Confirmed!';
+                confirmButton.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
+                confirmButton.classList.add('bg-green-600', 'hover:bg-green-700', 'text-white');
+
+            } catch (e) {
+                console.error("Error writing document: ", e);
+                showCustomMessage(`An error occurred while saving: ${e.message}`, "Database Error");
+                confirmButton.disabled = false;
+            }
         }
     </script>
 
