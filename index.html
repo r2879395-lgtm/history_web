@@ -3,185 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chinese Revolution of 1949</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>The Chinese Revolution: 1945–1949 (7 Phases)</title>
+    <!-- Load Tailwind CSS CDN --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter Font --><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        /* Custom styles to ensure smooth scrolling and font application */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            scroll-behavior: smooth;
         }
-        /* NHD Theme Colors */
-        .nhd-blue { background-color: #004c99; }
-        .text-nhd-blue { color: #004c99; }
-        .border-nhd-blue { border-color: #004c99; }
-        .nhd-gold { background-color: #ffc72c; }
-        .text-nhd-gold { color: #ffc72c; }
+        /* Style for the step cards */
+        .step-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15); /* Slightly bigger shadow on hover */
+        }
+        /* Custom blue color inspired by NHD branding */
+        .nhd-blue {
+            background-color: #004c99; /* Darker Blue */
+        }
+        .text-nhd-blue {
+            color: #004c99;
+        }
+        .border-nhd-blue {
+            border-color: #004c99;
+        }
+        /* Animation for section reveal */
+        .animated-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .animated-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-        /* Timeline Container sets up the vertical line */
-        #timeline {
-            position: relative;
-        }
-        
-        /* The main vertical line */
-        #timeline::before {
-            content: '';
+        /* Responsive timeline line */
+        .timeline-line {
             position: absolute;
+            left: 50%;
             top: 0;
             bottom: 0;
-            left: 16px; /* Position the line slightly left */
-            width: 2px;
-            background-color: #d1d5db; /* Gray-300 */
+            width: 4px;
+            background-color: #d1d5db; /* Light gray */
+            transform: translateX(-50%);
         }
-
-        /* Timeline Item positioning and spacing */
-        .timeline-item {
-            position: relative;
-            /* Horizontal offset is tight to the line */
-            padding-left: 36px; 
-            /* UNIFORM FIX: Setting a consistent, large vertical spacing for ALL items */
-            margin-bottom: 2rem; 
-        }
-
-        /* Removed the specific override for #part2-card to make spacing uniform */
-
-        /* The Status Dot (Marker on the line) */
-        .timeline-item > .dot {
-            position: absolute;
-            top: 0;
-            left: 7px; /* Center the dot over the 2px line at left: 16px */
-            width: 18px; 
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10; /* Ensure dot is above the line */
-            font-size: 0.75rem; 
-            background-color: #004c99; 
-            color: white;
-            border: 3px solid #f3f4f6; 
-            box-shadow: 0 0 0 2px #004c99; 
-            /* Keep vertical position at 0 to align with the card's top edge */
-            transform: translateY(0); 
-        }
-
-        /* Content Card refinement */
-        .timeline-item .content-card {
-            margin-top: 0; 
+        @media (min-width: 640px) {
+            /* On desktop/tablet, position line to the left of the cards */
+            .timeline-line {
+                left: 20px;
+                transform: translateX(0);
+            }
         }
     </style>
 </head>
-<body class="p-6 sm:p-10">
+<body class="bg-gray-50 min-h-screen">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    <div class="max-w-4xl mx-auto">
+        // --- Global Variables ---
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let auth;
+        let userId = null;
+
+        // --- Helper: Custom Message Box (replacing alert/confirm) ---
+        function showCustomMessage(message, title = 'Notification') {
+            const container = document.createElement('div');
+            container.className = 'fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50 p-4';
+            container.innerHTML = `
+                <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full">
+                    <h3 class="text-xl font-bold mb-3 text-nhd-blue">${title}</h3>
+                    <p class="text-gray-700 mb-4">${message}</p>
+                    <button id="close-message" class="nhd-blue text-white font-semibold py-2 px-4 rounded-lg float-right hover:opacity-90 transition">Close</button>
+                </div>
+            `;
+            document.body.appendChild(container);
+
+            document.getElementById('close-message').onclick = () => container.remove();
+        }
+
         
-        <!-- Header and User ID Display -->
-        <header class="pb-6 border-b border-gray-200 mb-8">
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">Project Timeline: The Chinese Revoltion: 1945-1949</h1>
-            <p class="mt-2 text-lg text-gray-600">Explore the decisive turning points that shaped modern China.</p>
-            <div id="auth-status" class="mt-4 p-2 text-sm bg-gray-100 rounded-lg text-gray-700">
-                
-            </div>
+
+        // --- Document Ready / Animation Logic (Intersection Observer) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll(".animated-section");
+
+            const observerOptions = {
+                root: null, 
+                rootMargin: "0px",
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Initial check for elements visible on load
+            const initialCheck = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { root: null, rootMargin: "0px", threshold: 0 });
+            sections.forEach(section => {
+                initialCheck.observe(section);
+            });
+        });
+    </script>
+
+    <div class="max-w-6xl mx-auto py-12 px-6 sm:px-10">
+        <!-- Header -->
+        <header class="text-center mb-12 animated-section">
+            <h1 class="text-5xl font-extrabold text-gray-900 mb-3">The Chinese Civil War</h1>
+            <p class="text-xl text-gray-600">A National History Day Investigation: The 7 Pivotal Phases (1945–1949)</p>
         </header>
 
-        <!-- Timeline Container -->
-        <div id="timeline" class="space-y-0 relative">
+        <!-- Timeline Section -->
+        <section class="mt-8 space-y-8 relative"> 
+            <!-- Visible Timeline Line -->
+            <div class="timeline-line hidden sm:block"></div>
 
-            <!-- Part 1: Initial Conflict -->
-            <div id="part1-card" class="timeline-item">
-                <!-- Status Dot -->
-                <div class="dot">
-                    <span class="font-bold">1</span>
-                </div>
-                <div class="content-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-l-4 border-nhd-blue">
-                    <span class="text-sm font-semibold text-nhd-blue uppercase">Phase 1: Initial Conflict</span>
-                    <h2 class="text-2xl font-bold mt-1 text-gray-800">The Post-War Power Vacuum (1945)</h2>
-                    <p class="mt-2 text-gray-600">The immediate aftermath of WWII and the collapse of the Japanese occupation sets the stage for civil war.</p>
-                    <a href="s1_e.html" id="part1-link" class="mt-4 inline-block nhd-blue text-white font-semibold py-2 px-4 rounded-lg text-sm transition hover:opacity-90">Read Details </a>
-                </div>
-            </div>
-
-            <!-- Part 2: KMT Dominance & Collapse (Current Focus) -->
-            <div id="part2-card" class="timeline-item">
-                <!-- Status Dot -->
-                <div class="dot">
-                    <span class="font-bold">2</span>
-                </div>
-                <div class="content-card bg-white p-6 rounded-xl shadow-lg ring-4 ring-nhd-gold transition duration-300 border-l-4 border-nhd-blue">
-                    <span class="text-sm font-semibold text-nhd-blue uppercase">Phase 2: KMT Dominance & Collapse</span>
-                    <h2 class="text-2xl font-bold mt-1 text-gray-800">Chiang's Fatal Strategy (1945–1946)</h2>
-                    <p class="mt-2 text-gray-600">Analyze the KMT's early strategic failures, corruption, and economic missteps that gifted the CCP control of the countryside.</p>
-                    <a href="s2_e.html" id="part2-link" class="mt-4 inline-block nhd-blue text-white font-semibold py-2 px-4 rounded-lg text-sm transition hover:opacity-90">Read Details</a>
-                </div>
+            <!-- Phase 1: Post-War Power Vacuum (1945) -->
+            <div class="step-card bg-white rounded-xl shadow-lg relative overflow-hidden border-l-4 border-nhd-blue animated-section">
+                <a href="s1_e.html" class="step-link block p-6 sm:p-8 cursor-pointer">
+                    <div class="absolute top-0 left-0 nhd-blue text-white w-10 h-10 flex items-center justify-center rounded-br-lg sm:rounded-tl-none sm:rounded-bl-xl sm:rounded-tr-none">
+                        <span class="font-bold text-lg">1</span>
+                    </div>
+                    <div class="sm:pl-12">
+                        <h2 class="text-2xl font-bold text-gray-800 mt-2 sm:mt-0">Phase 1: Post-War Power Vacuum</h2>
+                        <p class="text-lg font-semibold text-nhd-blue mb-2">The Race for Territory (August - December 1945)</p>
+                        <p class="text-gray-600">Examine the initial standoff and the scramble for major cities and critical infrastructure following Japan's surrender. Focus on the pivotal role of U.S. air transport and Soviet arms transfers in Manchuria.</p>
+                        <span class="mt-4 inline-block text-sm text-nhd-blue font-semibold hover:underline">View Phase Details →</span>
+                    </div>
+                </a>
             </div>
 
-            <!-- Part 3: Mao's Triumph -->
-            <div id="part3-card" class="timeline-item">
-                <!-- Status Dot -->
-                <div class="dot">
-                    <span class="font-bold">3</span>
-                </div>
-                <div class="content-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-l-4 border-nhd-blue">
-                    <span id="part3-status-text" class="text-sm font-semibold text-nhd-blue uppercase">Phase 3: The Decisive Battles</span>
-                    <h2 class="text-2xl font-bold mt-1 text-gray-800">Mao's Triumph: Mobile Warfare (1947–1949)</h2>
-                    <p class="mt-2 text-gray-600">The final phase of the conflict, focusing on the strategic shift and the pivotal Huaihai Campaign.</p>
-                    <a href="s3_e.html" id="part3-link" class="mt-4 inline-block nhd-blue text-white font-semibold py-2 px-4 rounded-lg text-sm transition hover:opacity-90">
-                        Read Details
-                    </a>
-                </div>
+            <!-- Phase 2: Full-Scale Civil War Begins (1946) -->
+            <div class="step-card bg-white rounded-xl shadow-lg relative overflow-hidden border-l-4 border-nhd-blue animated-section">
+                <a href="s2_e.html" class="step-link block p-6 sm:p-8 cursor-pointer">
+                    <div class="absolute top-0 left-0 nhd-blue text-white w-10 h-10 flex items-center justify-center rounded-br-lg sm:rounded-tl-none sm:rounded-bl-xl sm:rounded-tr-none">
+                        <span class="font-bold text-lg">2</span>
+                    </div>
+                    <div class="sm:pl-12">
+                        <h2 class="text-2xl font-bold text-gray-800 mt-2 sm:mt-0">Phase 2: The Nationalist Offensive</h2>
+                        <p class="text-lg font-semibold text-nhd-blue mb-2">Initial KMT Push & CCP Retrenchment (1946)</p>
+                        <p class="text-gray-600">Analyze Chiang Kai-shek's full-scale offensive. Focus on the capture of key Communist centers like Yan'an and the Nationalist advantage in firepower, offset by overextension and poor garrison strategy.</p>
+                        <span class="mt-4 inline-block text-sm text-nhd-blue font-semibold hover:underline">View Phase Details →</span>
+                    </div>
+                </a>
             </div>
 
-            <!-- Part 4: Comparison Step -->
-            <div id="part4-card" class="timeline-item">
-                <!-- Status Dot -->
-                <div class="dot">
-                    <span class="font-bold">4</span>
-                </div>
-                <div class="content-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-l-4 border-nhd-blue">
-                    <span class="text-sm font-semibold text-nhd-blue uppercase">Phase 4: Comparative Analysis</span>
-                    <h2 class="text-2xl font-bold mt-1 text-gray-800">The Two Chinas: Long-Term Impact</h2>
-                    <p class="mt-2 text-gray-600">Compare the **Kuomintang's retreat to Taiwan** with the **CCP's establishment of the PRC** on the mainland. Analyze their contrasting political, social, and economic trajectories post-1949.</p>
-                    <a href="s4_e.html" id="part4-link" class="mt-4 inline-block nhd-blue text-white font-semibold py-2 px-4 rounded-lg text-sm transition hover:opacity-90">
-                        Start Comparison
-                    </a>
-                </div>
+            <!-- Phase 3: The Communist Counter-Offensive (1947) -->
+            <div class="step-card bg-white rounded-xl shadow-lg relative overflow-hidden border-l-4 border-nhd-blue animated-section">
+                <a href="s3_e.html" class="step-link block p-6 sm:p-8 cursor-pointer">
+                    <div class="absolute top-0 left-0 nhd-blue text-white w-10 h-10 flex items-center justify-center rounded-br-lg sm:rounded-tl-none sm:rounded-bl-xl sm:rounded-tr-none">
+                        <span class="font-bold text-lg">3</span>
+                    </div>
+                    <div class="sm:pl-12">
+                        <h2 class="text-2xl font-bold text-gray-800 mt-2 sm:mt-0">Phase 3: Shift in Momentum</h2>
+                        <p class="text-lg font-semibold text-nhd-blue mb-2">The PLA’s Strategic Defense and Counterattack (1947)</p>
+                        <p class="text-gray-600">Examine how the People's Liberation Army (PLA) adapted to guerrilla warfare and launched successful counterattacks, particularly under Lin Biao in Manchuria, turning Nationalist victories into strategic liabilities.</p>
+                        <span class="mt-4 inline-block text-sm text-nhd-blue font-semibold hover:underline">View Phase Details →</span>
+                    </div>
+                </a>
             </div>
 
-            <!-- Part 5: Conclusion/Thesis Step -->
-            <div id="part5-card" class="timeline-item">
-                <!-- Status Dot -->
-                <div class="dot">
-                    <span class="font-bold">5</span>
-                </div>
-                <div class="content-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-l-4 border-nhd-blue">
-                    <span class="text-sm font-semibold text-nhd-blue uppercase">Phase 5: Final Argumentation</span>
-                    <h2 class="text-2xl font-bold mt-1 text-gray-800">Formulating the Final Thesis</h2>
-                    <p class="mt-2 text-gray-600">Synthesize research to craft a powerful, argumentative **thesis statement** that directly addresses the NHD theme of 'Turning Points'.</p>
-                    <a href="s5" id="part5-link" class="mt-4 inline-block nhd-blue text-white font-semibold py-2 px-4 rounded-lg text-sm transition hover:opacity-90">
-                        Write Thesis
-                    </a>
-                </div>
+            <!-- Phase 4: Northern & Central Plains Dominance (Early 1948) -->
+            <div class="step-card bg-white rounded-xl shadow-lg relative overflow-hidden border-l-4 border-nhd-blue animated-section">
+                <a href="s4_e.html" class="step-link block p-6 sm:p-8 cursor-pointer">
+                    <div class="absolute top-0 left-0 nhd-blue text-white w-10 h-10 flex items-center justify-center rounded-br-lg sm:rounded-tl-none sm:rounded-bl-xl sm:rounded-tr-none">
+                        <span class="font-bold text-lg">4</span>
+                    </div>
+                    <div class="sm:pl-12">
+                        <h2 class="text-2xl font-bold text-gray-800 mt-2 sm:mt-0">Phase 4: Consolidation of Base Areas</h2>
+                        <p class="text-lg font-semibold text-nhd-blue mb-2">Northern & Central Plains Dominance (Early 1948)</p>
+                        <p class="text-gray-600">Focus on the CCP's successful consolidation of strong base areas, their land reform policies gaining peasant support, and the crippling Nationalist logistical and morale failures across northern and central China.</p>
+                        <span class="mt-4 inline-block text-sm text-nhd-blue font-semibold hover:underline">View Phase Details →</span>
+                    </div>
+                </a>
             </div>
-            
-            <!-- Part 6: Final Presentation/Polish -->
-            <div id="part6-card" class="timeline-item">
-                <!-- Status Dot -->
-                <div class="dot">
-                    <span class="font-bold">6</span>
-                </div>
-                <div class="content-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-l-4 border-nhd-blue">
-                    <span class="text-sm font-semibold text-nhd-blue uppercase">Phase 6: Final Presentation</span>
-                    <h2 class="text-2xl font-bold mt-1 text-gray-800">Annotated Bibliography & Presentation Polish</h2>
-                    <p class="mt-2 text-gray-600">Finalize your presentation medium (e.g., documentary, website) and compile the required **Annotated Bibliography** and Process Paper.</p>
-                    <a href="s6_e.html" id="part6-link" class="mt-4 inline-block nhd-blue text-white font-semibold py-2 px-4 rounded-lg text-sm transition hover:opacity-90">
-                        Review Checklist
-                    </a>
-                </div>
+
+            <!-- Phase 5: The Decisive Campaigns (Late 1948) -->
+            <div class="step-card bg-white rounded-xl shadow-lg relative overflow-hidden border-l-4 border-nhd-blue animated-section">
+                <a href="s5_e.html" class="step-link block p-6 sm:p-8 cursor-pointer">
+                    <div class="absolute top-0 left-0 nhd-blue text-white w-10 h-10 flex items-center justify-center rounded-br-lg sm:rounded-tl-none sm:rounded-bl-xl sm:rounded-tr-none">
+                        <span class="font-bold text-lg">5</span>
+                    </div>
+                    <div class="sm:pl-12">
+                        <h2 class="text-2xl font-bold text-gray-800 mt-2 sm:mt-0">Phase 5: The Three Great Campaigns</h2>
+                        <p class="text-lg font-semibold text-nhd-blue mb-2">The Strategic Blunder (September 1948 - January 1949)</p>
+                        <p class="text-gray-600">The critical period featuring the Liaoshen, Huaihai, and Pingjin campaigns. These massive engagements saw the KMT lose its elite forces and most critical urban centers, guaranteeing the CCP's ultimate victory.</p>
+                        <span class="mt-4 inline-block text-sm text-nhd-blue font-semibold hover:underline">View Phase Details →</span>
+                    </div>
+                </a>
             </div>
-        </div>        
-    </script>
+
+            <!-- Phase 6: Crossing the Yangtze (Spring 1949) -->
+            <div class="step-card bg-white rounded-xl shadow-lg relative overflow-hidden border-l-4 border-nhd-blue animated-section">
+                <a href="s6_e.html" class="step-link block p-6 sm:p-8 cursor-pointer">
+                    <div class="absolute top-0 left-0 nhd-blue text-white w-10 h-10 flex items-center justify-center rounded-br-lg sm:rounded-tl-none sm:rounded-bl-xl sm:rounded-tr-none">
+                        <span class="font-bold text-lg">6</span>
+                    </div>
+                    <div class="sm:pl-12">
+                        <h2 class="text-2xl font-bold text-gray-800 mt-2 sm:mt-0">Phase 6: The Yangtze Crossing</h2>
+                        <p class="text-lg font-semibold text-nhd-blue mb-2">The Collapse of the South (April - May 1949)</p>
+                        <p class="text-gray-600">Study the PLA's successful crossing of the Yangtze, effectively splitting the Nationalist resistance. Focus on the fall of Nanjing (the KMT capital) and the subsequent capture of major cities like Shanghai.</p>
+                        <span class="mt-4 inline-block text-sm text-nhd-blue font-semibold hover:underline">View Phase Details →</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Phase 7: Founding of the PRC and Retreat (Late 1949) -->
+            <div class="step-card bg-white rounded-xl shadow-lg relative overflow-hidden border-l-4 border-nhd-blue animated-section">
+                <a href="s7_e.html" class="step-link block p-6 sm:p-8 cursor-pointer">
+                    <div class="absolute top-0 left-0 nhd-blue text-white w-10 h-10 flex items-center justify-center rounded-br-lg sm:rounded-tl-none sm:rounded-bl-xl sm:rounded-tr-none">
+                        <span class="font-bold text-lg">7</span>
+                    </div>
+                    <div class="sm:pl-12">
+                        <h2 class="text-2xl font-bold text-gray-800 mt-2 sm:mt-0">Phase 7: The Final Outcome</h2>
+                        <p class="text-lg font-semibold text-nhd-blue mb-2">Establishment of the PRC and Retreat (June - December 1949)</p>
+                        <p class="text-gray-600">The culmination of the war, marked by Mao Zedong's declaration of the People's Republic of China (PRC) in Beijing and the final, permanent retreat of Chiang Kai-shek and the KMT forces to Taiwan.</p>
+                        <span class="mt-4 inline-block text-sm text-nhd-blue font-semibold hover:underline">View Phase Details →</span>
+                    </div>
+                </a>
+            </div>
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-gray-200 text-center text-sm text-gray-500 animated-section">
+            <p>&copy; 2067 Chinese Civil War NHD Project.</p>
+        </footer>
+    </div>
 
 </body>
 </html>
